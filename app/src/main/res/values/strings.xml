@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">RefreshTest</string>
+    <string name="loading_text">加載中，請稍後～</string>
+    <string name="loading_empty">loading_empty</string>
+    <string name="loading_finish_empty">loading_finish_empty</string>
+    <string name="load_click_more">load_click_more</string>
+    <string name="loading_finish_error">loading_finish_error</string>
 </resources>

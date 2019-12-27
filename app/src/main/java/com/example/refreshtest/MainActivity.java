@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                         mPtrFrameLayout.refreshComplete();
                         //第一个参数是：数据是否为空；第二个参数是：是否还有更多数据
                         mLoadMoreListViewContainer.loadMoreFinish(false, true);
-                        adapter.notifyDataSetChanged();
+                        adapter.notifyDataSetChanged(); // 更新列表顯示
                     }
                 }, 500);
             }
@@ -81,10 +81,28 @@ public class MainActivity extends AppCompatActivity {
             }
         }, 200);
 
+        mPtrFrameLayout.autoRefresh(); // 加上這句一開始進來時就不會有自動刷新的圖示
+
         //4.加载更多的组件
         mLoadMoreListViewContainer = findViewById(R.id.load_more_list_view_container);
-        mLoadMoreListViewContainer.setAutoLoadMore(true);//设置是否自动加载更多
-        mLoadMoreListViewContainer.useDefaultHeader();
+        mLoadMoreListViewContainer.setAutoLoadMore(true);//设置是否自动加载更多setPtrHandler
+
+//        // 使用預設的“loading”footview
+//        mLoadMoreListViewContainer.useDefaultHeader();
+//        mLoadMoreListViewContainer.useDefaultFooter();
+
+        // 使用自定義的 LoadMoreFootView
+        ILoadMoreFooterView customMoreView = new ILoadMoreFooterView(this);
+        // 根据实际情况设置样式
+        AbsListView.LayoutParams lp = new AbsListView.LayoutParams(-2, LocalDisplay.dp2px(80));
+        customMoreView.setLayoutParams(lp);
+        mLoadMoreListViewContainer.setLoadMoreView(customMoreView);
+        mLoadMoreListViewContainer.setLoadMoreUIHandler(customMoreView);
+
+//        ILoadMoreFooterView customMoreView = new ILoadMoreFooterView(this);
+//        customMoreView.setVisibility(View.GONE);
+//        mLoadMoreListViewContainer.setLoadMoreView(customMoreView);
+//        mLoadMoreListViewContainer.setLoadMoreUIHandler(customMoreView);
 
         //5.添加加载更多的事件监听
         mLoadMoreListViewContainer.setLoadMoreHandler(new LoadMoreHandler() {
@@ -96,16 +114,17 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         start++;
                         mockStrList.addAll(getMockData(start * 10, count));
-                        if (start * 10 > 20) {
-//                          mLoadMoreListViewContainer.loadMoreFinish(true, false);
-                            //以下是加载失败的情节
-                            int errorCode = 0;
-                            String errorMessage = "加载失败，点击加载更多";
-                            mLoadMoreListViewContainer.loadMoreError(errorCode, errorMessage);
-                        } else {
-                            mLoadMoreListViewContainer.loadMoreFinish(false, true);
-                        }
-                        adapter.notifyDataSetChanged();
+                        mLoadMoreListViewContainer.loadMoreFinish(false, true);
+//                        if (start * 10 > 30) {
+////                          mLoadMoreListViewContainer.loadMoreFinish(true, false);
+//                            //以下是加载失败的情节
+//                            int errorCode = 0;
+//                            String errorMessage = "加载失败，点击加载更多";
+//                            mLoadMoreListViewContainer.loadMoreError(errorCode, errorMessage);
+//                        } else {
+//                            mLoadMoreListViewContainer.loadMoreFinish(false, true);
+//                        }
+                        adapter.notifyDataSetChanged(); // 更新列表顯示
                     }
                 }, 1000);
             }
